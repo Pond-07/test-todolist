@@ -4,6 +4,7 @@ let todoItems = JSON.parse(localStorage.getItem("todoItems")) || [];
       renderList();
     };
 
+    // เะิ่มรายการใน todolist แต่ถ้ยายังไม่มีข้อความในนั้น จะมีเTag alert ขึ้นมา
     function newElement() {
       let inputValue = document.getElementById("myInput").value.trim();
       if (inputValue === '') {
@@ -11,10 +12,12 @@ let todoItems = JSON.parse(localStorage.getItem("todoItems")) || [];
         return;
       }
 
+    // เพิ่มรายการเข้าไปใน todolist เเละบันทึกลง localStorage  เเละลบข้อความใน input 
       addItemToList(inputValue, true);
       document.getElementById("myInput").value = "";
     }
 
+    // สร้างวtag li ขึ้นมาใหม่ เเละสร้างปุ่ม x ลบ เเละสร้าง id ถ้ายังไม่มี เเละทำการลบรายการที่เลือกออกจาก todolist เเละบันทึกลง localStorage
     function addItemToList(text, save = true, id = null) {
       let li = document.createElement("li");
       li.textContent = text;
@@ -30,6 +33,7 @@ let todoItems = JSON.parse(localStorage.getItem("todoItems")) || [];
       }
       li.dataset.id = id;
 
+      // เมื่อคลิกข้อมูลลงใน li จะทำการลบข้อมูลที่เลือกออกจาก todolist
       span.onclick = function () {
         li.remove();
         todoItems = todoItems.filter(item => item._id != id);
@@ -58,5 +62,13 @@ let todoItems = JSON.parse(localStorage.getItem("todoItems")) || [];
     document.getElementById("myUL").addEventListener("click", function (ev) {
       if (ev.target.tagName === "LI") {
         ev.target.classList.toggle("checked");
+      }
+    });
+
+
+    // ทำให้กด Enter แล้วเพิ่มรายการได้
+    document.getElementById("myInput").addEventListener("keypress", function (event) {
+      if (event.key === "Enter") {
+        newElement();
       }
     });
