@@ -1,10 +1,11 @@
 let todoItems = JSON.parse(localStorage.getItem("todoItems")) || [];
 
+// เมื่อเปิดหน้าเว็บเพจจะทำการโหลดข้อมูลจาก localStorage เเละ render รายการที่มีอยู่ใน todolist
     window.onload = function () {
       renderList();
     };
 
-    // เะิ่มรายการใน todolist แต่ถ้ยายังไม่มีข้อความในนั้น จะมีเTag alert ขึ้นมา
+    // เพิ่มรายการใน todolist แต่ถ้ยายังไม่มีข้อความในนั้น จะมีเTag alert ขึ้นมา
     function newElement() {
       let inputValue = document.getElementById("myInput").value.trim();
       if (inputValue === '') {
