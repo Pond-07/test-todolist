@@ -19,9 +19,12 @@ let todoItems = JSON.parse(localStorage.getItem("todoItems")) || [];
     }
 
     // สร้างวtag li ขึ้นมาใหม่ เเละสร้างปุ่ม x ลบ เเละสร้าง id ถ้ายังไม่มี เเละทำการลบรายการที่เลือกออกจาก todolist เเละบันทึกลง localStorage
-    function addItemToList(text, save = true, id = null) {
+    function addItemToList(text, save = true, id = null,checked = false) {
       let li = document.createElement("li");
       li.textContent = text;
+      if (checked) {
+        li.classList.add("checked");
+      }
 
       // สร้างปุ่ม x ลบ
       let span = document.createElement("SPAN");
@@ -52,7 +55,7 @@ let todoItems = JSON.parse(localStorage.getItem("todoItems")) || [];
 
     function renderList() {
       document.getElementById("myUL").innerHTML = "";
-      todoItems.forEach(item => addItemToList(item.text, false, item._id));
+      todoItems.forEach(item => addItemToList(item.text, false, item._id, item.checked));
     }
 
     function updateStorage() {
@@ -63,6 +66,15 @@ let todoItems = JSON.parse(localStorage.getItem("todoItems")) || [];
     document.getElementById("myUL").addEventListener("click", function (ev) {
       if (ev.target.tagName === "LI") {
         ev.target.classList.toggle("checked");
+
+        let id = ev.target.dataset.id;
+        let item = todoItems.find(item => item._id == id);
+        if (item) {
+            item.checked = ev.target.classList.contains("checked");
+            updateStorage();
+            
+        }
+        
       }
     });
 

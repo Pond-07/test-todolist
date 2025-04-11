@@ -19,12 +19,10 @@ let todoItems = JSON.parse(localStorage.getItem("todoItems")) || [];
       let li = document.createElement("li");
       li.textContent = text;
 
-      // สร้างปุ่ม x ลบ
       let span = document.createElement("SPAN");
       span.className = "close";
       span.innerHTML = "x";
 
-      // สร้าง id ถ้ายังไม่มี
       if (!id) {
         id = Date.now() + Math.random();
       }
@@ -54,7 +52,6 @@ let todoItems = JSON.parse(localStorage.getItem("todoItems")) || [];
       localStorage.setItem("todoItems", JSON.stringify(todoItems));
     }
 
-    // ทำให้คลิกที่ list แล้วขีดฆ่าได้
     document.getElementById("myUL").addEventListener("click", function (ev) {
       if (ev.target.tagName === "LI") {
         ev.target.classList.toggle("checked");
