@@ -1,340 +1,115 @@
-// การทำงานของโค้ดนี้คือการสร้างรายการที่สามารถเพิ่ม ลบ และทำเครื่องหมายว่าเสร็จแล้วได้ โดยใช้ HTML, CSS และ JavaScript
-// โดยมีการใช้ localStorage เพื่อเก็บข้อมูลรายการที่ผู้ใช้เพิ่มไว้ในเบราว์เซอร์
-// เมื่อผู้ใช้เปิดหน้าเว็บใหม่ ข้อมูลที่เก็บไว้ใน localStorage จะถูกโหลดขึ้นมาแสดงในรายการ
-// โดยมีการสร้างปุ่ม "×" เพื่อให้ผู้ใช้สามารถลบรายการได้
-// นอกจากนี้ยังมีการทำเครื่องหมายว่าเสร็จแล้วหรือยัง โดยการคลิกที่รายการ
-// และมีการตรวจสอบว่าผู้ใช้ได้กรอกข้อมูลใน input หรือไม่ ถ้ายังไม่ได้กรอกจะมีการแจ้งเตือนให้กรอกข้อมูลก่อน
-// ___________________ โค้ด _____________________
-// เมื่อโหลดหน้าเว็บ ให้สร้างปุ่ม × สำหรับแต่ละรายการในรายการที่มีอยู่
-// และตั้งค่าให้ปุ่ม × ลบรายการเมื่อคลิก
-// เมื่อโหลดหน้าเว็บ
 
-// เมื่อโหลดหน้าเว็บ ฟังก์ชัน `window.onload` จะถูกเรียกใช้ ซึ่งจะโหลดรายการที่เก็บไว้ใน localStorage และแสดงในรายการ
-// โดยใช้ฟังก์ชัน `addItemToList` เพื่อสร้างรายการใหม่ใน HTML
-// ฟังก์ชัน `newElement` จะถูกเรียกเมื่อผู้ใช้คลิกปุ่ม "Add" โดยจะตรวจสอบว่าผู้ใช้กรอกข้อมูลใน input หรือไม่
-// ถ้าไม่กรอกจะแจ้งเตือนให้กรอกข้อมูลก่อน
-// ถ้าผู้ใช้กรอกข้อมูล ฟังก์ชัน `addItemToList` จะถูกเรียกเพื่อสร้างรายการใหม่ใน HTML
-// โดยจะส่งค่า `true` เพื่อบอกว่าให้บันทึกข้อมูลใน localStorage ด้วย
-// ฟังก์ชัน `addItemToList` จะสร้าง `<li>` ใหม่และเพิ่มข้อความที่ผู้ใช้กรอกเข้าไป
-// จากนั้นจะสร้างปุ่ม "×" เพื่อให้ผู้ใช้สามารถลบรายการได้
-// เมื่อคลิกที่ปุ่ม "×" จะลบรายการนั้นออกจาก HTML และจาก localStorage ด้วย
-// ฟังก์ชัน `renderList` จะถูกเรียกเพื่อแสดงรายการทั้งหมดใน HTML โดยจะลบรายการเก่าออกก่อน
-// ฟังก์ชัน `updateStorage` จะถูกเรียกเพื่ออัปเดตข้อมูลใน localStorage ทุกครั้งที่มีการเพิ่มหรือลบรายการ
+// ___________________ ทำความเข้าใจ _____________________
 
+var myNodelist = document.getElementsByTagName("LI");
+for (let i = 0; i < myNodelist.length; i++) {
+  let span = document.createElement("SPAN");
+  let txt = document.createTextNode("\u00D7");
+  span.className = "close";
+  span.appendChild(txt);
+  myNodelist[i].appendChild(span);
 
+  span.onclick = function () {
+    let div = this.parentElement;
+    div.remove();
+  };
+}
 
-
-
-
-
+var list = document.querySelector("ul");
+list.addEventListener(
+  "click",
+  function (ev) {
+    if (ev.target.tagName === "LI") {
+      ev.target.classList.toggle("checked");
+    }
+  },
+  false
+);
 
 
-// var myNodelist = document.getElementsByTagName("LI");
-// for (let i = 0; i < myNodelist.length; i++) {
-//   let span = document.createElement("SPAN");
-//   let txt = document.createTextNode("\u00D7");
-//   span.className = "close";
-//   span.appendChild(txt);
-//   myNodelist[i].appendChild(span);
+// เมื่อพิมพ์ข้อความใน input แล้วกด add
+// จะทำการเพิ่มข้อความลงใน list
 
-//   // ตั้งค่าให้ปุ่ม × ลบรายการ
-//   span.onclick = function () {
-//     let div = this.parentElement;
-//     div.remove();
-//   };
-// }
+function newElement() {
+  let inputValue = document.getElementById("myInput").value;
+  if (inputValue === "") return;
 
-// // เมื่อคลิกที่รายการ ให้ toggle ว่าเสร็จแล้วหรือยัง
-// var list = document.querySelector("ul");
-// list.addEventListener(
-//   "click",
-//   function (ev) {
-//     if (ev.target.tagName === "LI") {
-//       ev.target.classList.toggle("checked");
-//     }
-//   },
-//   false
-// );
+  let li = document.createElement("li");
+  let t = document.createTextNode(inputValue);
+  li.appendChild(t);
+  document.getElementById("myUL").appendChild(li);
+  document.getElementById("myInput").value = "";
 
-// // ฟังก์ชันเพิ่มรายการใหม่ (ไม่เช็คซ้ำ)
-// function newElement() {
-//   let inputValue = document.getElementById("myInput").value;
-//   if (inputValue === "") return;
+  let span = document.createElement("SPAN");
+  let txt = document.createTextNode("\u00D7");
+  span.className = "close";
+  span.appendChild(txt);
+  li.appendChild(span);
 
-//   let li = document.createElement("li");
-//   let t = document.createTextNode(inputValue);
-//   li.appendChild(t);
-//   document.getElementById("myUL").appendChild(li);
-//   document.getElementById("myInput").value = "";
-
-//   let span = document.createElement("SPAN");
-//   let txt = document.createTextNode("\u00D7");
-//   span.className = "close";
-//   span.appendChild(txt);
-//   li.appendChild(span);
-
-//   // ปุ่ม × จะลบ <li> ตัวเองออก
-//   span.onclick = function () {
-//     let div = this.parentElement;
-//     div.remove();
-//   };
-// }
+  span.onclick = function () {
+    let div = this.parentElement;
+    div.remove();
+  };
+}
+ 
 
 
+// ___________________ Chat GPT ช่วย ทำความเข้าใจด้วย ___________________
 
-// window.onload = function () {
-//   let savedItems = JSON.parse(localStorage.getItem("todoItems")) || [];
-//   savedItems.forEach(item => addItemToList(item.text, false));
-// };
+// เมื่อหน้าเว็ปถูกเปิด คำสั่งนี้จะดึงข้อมูลจาก localStorage
+window.onload = function () {
+  let savedItems = JSON.parse(localStorage.getItem("todoItems")) || [];
+  savedItems.forEach(item => addItemToList(item.text, false));
+};
+// tag alert เมื่อกดปุ่ม add  ข้อความจะขึ้นมาเมื่อในTag ไม่มีข้อความอยู่ในนั้น
+function newElement() {
+  let inputValue = document.getElementById("myInput").value.trim();
+  if (inputValue === '') {
+    alert("ลองเขียนอะไรเพิ่มเข้าไปดูสิ!");
+    return;
+  }
 
-// function newElement() {
-//   let inputValue = document.getElementById("myInput").value.trim();
-//   if (inputValue === '') {
-//     alert("ลองเขียนอะไรเพิ่มเข้าไปดูสิ!");
-//     return;
-//   }
+  addItemToList(inputValue, true);
+  document.getElementById("myInput").value = "";
+}
 
-//   addItemToList(inputValue, true);
-//   document.getElementById("myInput").value = "";
-// }
-
-// function addItemToList(text, save = true) {
-//   let li = document.createElement("li");
-//   li.textContent = text;
-
-//   let span = document.createElement("SPAN");
-//   span.className = "close";
-//   span.innerHTML = "×";
-
-//   span.onclick = function () {
-//     li.remove();
-//     todoItems = todoItems.filter((item, index) => {
-//       return !(item.text === text && item._id === li.dataset.id);
-//     });
-//     updateStorage();
-//   };
-
-//   // สร้าง ID สำหรับรายการนี้ (เพื่อแยกรายการซ้ำ)
-//   let id = Date.now() + Math.random();
-//   li.dataset.id = id;
-
-//   li.appendChild(span);
-//   document.getElementById("myUL").appendChild(li);
-
-//   if (save) {
-//     todoItems.push({ text: text, _id: id });
-//     updateStorage();
-//   }
-// }
-
-// function renderList() {
-//   document.getElementById("myUL").innerHTML = "";
-//   todoItems.forEach(item => addItemToList(item.text, false));
-// }
-
-// function updateStorage() {
-//   localStorage.setItem("todoItems", JSON.stringify(todoItems));
-// }
-
-// // ใช้ _id ในการแยกรายการซ้ำ
-// let todoItems = JSON.parse(localStorage.getItem("todoItems")) || [];
-
-
-
-// // _______________________________________________
-
-
-// var myNodelist = document.getElementsByTagName("LI");
-// for (i = 0; i < myNodelist.length; i++) {
-//   var span = document.createElement("SPAN");
-//   var txt = document.createTextNode("\u00D7");
-//   span.className = "close";
-//   span.appendChild(txt);
-//   myNodelist[i].appendChild(span);
-// }
-
-// var close = document.getElementsByClassName("close");
-// var i;
-// for (i = 0; i < close.length; i++) {
-//   close[i].onclick = function() {
-//     var div = this.parentElement;
-//     if (this.querySelector(".counter") == null) {
-//       div.style.display = "none";
-//     } else {
-//       var count = parseInt(this.querySelector(".counter").textContent);
-
-//       if (count <= 1) {
-//         div.style.display = "none";
-//         count--;
-//         this.querySelector(".counter").textContent = count;
-//       } else {
-//         count--;
-//         this.querySelector(".counter").textContent = count;
-//       }
-
-//     }
-//   }
-// }
-
-// var list = document.querySelector('ul');
-// list.addEventListener('click', function(ev) {
-//   if (ev.target.tagName === 'LI') {
-//     ev.target.classList.toggle('checked');
-//   }
-// }, false);
-
-
-
-// function newElement() {
-
-//   var isExisting = false;
-//   var existingArray = [];
-//   var inputValue = document.getElementById("myInput").value;
-//   if (inputValue === '') return;
-//   var list = document.querySelectorAll("#myUL li");
+// เมื่อใส่ข้อความลงไปในTag ข้อความจะถูกเพิ่มลงไปใน list ทันที
+function addItemToList(text, save = true) {
+  let li = document.createElement("li");
+  li.textContent = text;
   
-//   [].forEach.call(list, function(el) {
-//     [].forEach.call(el.childNodes, function(elem) {
-//       if (elem.nodeType == 3) {
-//         if (elem.nodeValue == inputValue) {
-//           isExisting = true;
-//           var span = elem.nextElementSibling;
-//           if (span.querySelector(".counter") == null) {
-//             var countSpan = document.createElement("span");
-//             var counter = 2;
-//             if (elem.parentElement.style.display == "none") {
-//               counter = 1;
-//               elem.parentElement.style.display = "list-item";
-//             }
+// สร้างปุ่ม x ขึ้นมาเมื่ออยากยกจะลบข้อความใน list
+  let span = document.createElement("SPAN");
+  span.className = "close";
+  span.innerHTML = "x";
 
+  span.onclick = function () {
+    li.remove();
+    todoItems = todoItems.filter((item, index) => {
+      return !(item.text === text && item._id === li.dataset.id);
+    });
+    updateStorage();
+  };
 
-//             var count = document.createTextNode(counter);
-//             countSpan.className = "counter";
-//             countSpan.appendChild(count);
-//             span.appendChild(countSpan);
+  let id = Date.now() + Math.random();
+  li.dataset.id = id;
 
-//           } else {
+  li.appendChild(span);
+  document.getElementById("myUL").appendChild(li);
 
-//             elem.parentElement.style.display = "list-item";
-//             var count = parseInt(span.querySelector(".counter").textContent);
-//             count++;
-//             span.querySelector(".counter").textContent = count;
-//           }
-          
+  if (save) {
+    todoItems.push({ text: text, _id: id });
+    updateStorage();
+  }
+}
 
-//         }
+function renderList() {
+  document.getElementById("myUL").innerHTML = "";
+  todoItems.forEach(item => addItemToList(item.text, false));
+}
 
-//       }
-//     });
-//   });
+function updateStorage() {
+  localStorage.setItem("todoItems", JSON.stringify(todoItems));
+}
 
-//   if (isExisting === false) {
-//     var li = document.createElement("li");
-//     var t = document.createTextNode(inputValue);
-//     li.appendChild(t);
-//     document.getElementById("myUL").appendChild(li);
-//     document.getElementById("myInput").value = "";
-
-//     var span = document.createElement("SPAN");
-//     var txt = document.createTextNode("\u00D7");
-//     span.className = "close";
-//     span.appendChild(txt);
-//     li.appendChild(span);
-
-//     span.onclick = function () {
-//       var div = this.parentElement;
-//       div.style.display = "none";
-//     }
-//         var div = this.parentElement;
-//         if (this.querySelector(".counter") == null) {
-//           div.style.display = "none";
-//         } else {
-//           var count = parseInt(this.querySelector(".counter").textContent);
-
-//           if (count <= 1) {
-//             div.style.display = "none";
-//             count--;
-//             this.querySelector(".counter").textContent = count;
-//           } else {
-//             count--;
-//             this.querySelector(".counter").textContent = count;
-//           }
-//         }
-//       }
-//     }
-// //  -----------------------
-
-//  window.onload = function () {
-//     let savedItems = JSON.parse(localStorage.getItem("todoItems")) || [];
-//     savedItems.forEach(item => addItemToList(item.text, item.count, false));
-//   };
-  
-//   function newElement() {
-//     let inputValue = document.getElementById("myInput").value.trim();
-//     if (inputValue === '') {
-//       alert("ลองเขียนอะไรเพิ่มเข้าไปดูสิ!");
-//       return;
-//     }
-  
-//     let existing = findItem(inputValue);
-  
-//     if (existing) {
-//       existing.count++;
-//       updateStorage();
-//       renderList();
-//     } else {
-//       addItemToList(inputValue, 1, true);
-//     }
-  
-//     document.getElementById("myInput").value = "";
-//   }
-  
-//   function addItemToList(text, count = 1, save = true) {
-//     let li = document.createElement("li");
-//     li.textContent = text;
-  
-//     let span = document.createElement("SPAN");
-//     span.className = "close";
-//     span.innerHTML = "x";
-  
-//     if (count > 1) {
-//       let countSpan = document.createElement("span");
-//       countSpan.className = "counter";
-//       countSpan.textContent = count;
-//       span.appendChild(countSpan);
-//     }
-  
-//     span.onclick = function () {
-//       let item = findItem(text);
-//       if (item.count > 1) {
-//         item.count--;
-//       } else {
-//         todoItems = todoItems.filter(i => i.text !== text);
-//       }
-//       updateStorage();
-//       renderList();
-//     };
-  
-//     li.appendChild(span);
-//     document.getElementById("myUL").appendChild(li);
-  
-//     if (save) {
-//       todoItems.push({ text, count });
-//       updateStorage();
-//     }
-//   }
-  
-//   function findItem(text) {
-//     return todoItems.find(item => item.text === text);
-//   }
-  
-//   function renderList() {
-//     document.getElementById("myUL").innerHTML = "";
-//     todoItems.forEach(item => addItemToList(item.text, item.count, false));
-//   }
-  
-//   function updateStorage() {
-//     localStorage.setItem("todoItems", JSON.stringify(todoItems));
-//   }
-  
-// //   let todoItems = JSON.parse(localStorage.getItem("todoItems")) || [];
+let todoItems = JSON.parse(localStorage.getItem("todoItems")) || [];
